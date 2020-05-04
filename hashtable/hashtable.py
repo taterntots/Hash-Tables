@@ -8,7 +8,6 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -82,7 +81,7 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        if key is None:
+        if self.storage[index] is None:
             return None
         else:
             return self.storage[index]
