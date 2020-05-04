@@ -16,6 +16,9 @@ class HashTable:
 
     Implement this.
     """
+    def __init__(self, capacity):
+        self.capacity = capacity # This is the number of buckets in our hash table
+        self.storage = [None] * capacity
 
     def fnv1(self, key):
         """
@@ -30,6 +33,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
+        hash = 5381
+        for x in key:
+            hash = (hash * 33) + ord(x)
+        return hash
 
     def hash_index(self, key):
         """
@@ -47,6 +54,8 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        self.storage[index] = value
 
     def delete(self, key):
         """
@@ -56,6 +65,12 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+
+        if self.storage[index] is None:
+            print('Key not found')
+        else:
+            self.storage[index] = None
 
     def get(self, key):
         """
@@ -65,6 +80,12 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+
+        if key is None:
+            return None
+        else:
+            return self.storage[index]
 
     def resize(self):
         """
