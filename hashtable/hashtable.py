@@ -54,19 +54,22 @@ class HashTable:
 
         Implement this.
         """
+        # Define variables for legibility
         index = self.hash_index(key)
-        # self.storage[index] = value
         node = self.storage[index]
-
-        # print(f'fart', node)
+        new_node = HashTableEntry(key, value)
 
         # If our node exists in storage
         if node:
             # Replace our node with the value
             node = value
-        # Otherwise create a new record for the list
+        # Otherwise
         else:
-            HashTableEntry(key, value)
+            # Create a new record for the list and assign to the head
+            new_node.next = self.head
+            print(new_node.key)
+            # Make the head the new node
+            self.head = new_node
 
     def delete(self, key):
         """
@@ -91,12 +94,21 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # Define variables for legibility
+        current = self.head
 
-        if self.storage[index] is None:
-            return None
-        else:
-            return self.storage[index]
+        # While the current head exists (is not None)
+        while current:
+            # Starting at the head, if the current node's key is equal to the key being passed
+            if current.key == key:
+                # Return that node's value
+                return current.value
+            
+            # Redefine current node to the next node before looping again
+            current = current.next
+
+        # Otherwise, if there are no more 'next' nodes, return None
+        return None
 
     def resize(self, new_capacity):
         """
@@ -122,8 +134,8 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = len(ht.storage)
-    ht.resize()
     new_capacity = len(ht.storage)
+    ht.resize(new_capacity)
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
