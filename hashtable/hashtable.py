@@ -18,6 +18,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity # This is the number of buckets in our hash table
         self.storage = [None] * capacity
+        self.head = None
 
     def fnv1(self, key):
         """
@@ -53,8 +54,22 @@ class HashTable:
 
         Implement this.
         """
+        # Define variables for legibility
         index = self.hash_index(key)
-        self.storage[index] = value
+        node = self.storage[index]
+        new_node = HashTableEntry(key, value)
+
+        # If our node exists in storage
+        if node:
+            # Replace our node with the value
+            node = value
+        # Otherwise
+        else:
+            # Create a new record for the list and assign to the head
+            new_node.next = self.head
+            print(new_node.key)
+            # Make the head the new node
+            self.head = new_node
 
     def delete(self, key):
         """
@@ -64,12 +79,21 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # Define variables for legibility
+        current = self.head
 
-        if self.storage[index] is None:
-            print('Key not found')
-        else:
-            self.storage[index] = None
+        # While the current node exists (starting at the head)
+        while current:
+            # If the current node's key is equal to the key being passed
+            if current.key == key:
+                # Reset that node's key to None
+                current.key = None
+            
+            # Redefine current node to the next node before looping again
+            current = current.next
+
+        # Otherwise, if there are no more 'next' nodes, return None
+        return None
 
     def get(self, key):
         """
@@ -79,20 +103,44 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # Define variables for legibility
+        current = self.head
 
-        if self.storage[index] is None:
-            return None
-        else:
-            return self.storage[index]
+        # WWhile the current node exists (starting at the head)
+        while current:
+            # If the current node's key is equal to the key being passed
+            if current.key == key:
+                # Return that node's value
+                return current.value
+            
+            # Redefine current node to the next node before looping again
+            current = current.next
 
-    def resize(self):
+        # Otherwise, if there are no more 'next' nodes, return None
+        return None
+
+    def resize(self, new_capacity):
         """
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
 
         Implement this.
         """
+        # Redefine our capacity to be the passed in capacity from our argument
+        self.capacity = new_capacity
+        # Create a new storage variable for containing our updated list
+        new_storage = [None] * self.capacity
+        
+        # For each value in our original stored list
+        for value in self.storage:
+            # If a value exists
+            if value:
+                # Change our index and store the hashed key's value to our new storage
+                hashed_key = self.hash_index(value[0])
+                new_storage[hashed_key] = value
+        
+        # Replace the old storage with the new one
+        self.storage = new_storage
 
 if __name__ == "__main__":
     ht = HashTable(2)
@@ -110,7 +158,7 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = len(ht.storage)
-    ht.resize()
+    ht.resize(843)
     new_capacity = len(ht.storage)
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
