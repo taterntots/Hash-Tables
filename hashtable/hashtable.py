@@ -126,6 +126,21 @@ class HashTable:
 
         Implement this.
         """
+        # Redefine our capacity to be the passed in capacity from our argument
+        self.capacity = new_capacity
+        # Create a new storage variable for containing our updated list
+        new_storage = [None] * self.capacity
+        
+        # For each value in our original stored list
+        for value in self.storage:
+            # If a value exists
+            if value:
+                # Change our index and store the hashed key's value to our new storage
+                hashed_key = self.hash_index(value[0])
+                new_storage[hashed_key] = value
+        
+        # Replace the old storage with the new one
+        self.storage = new_storage
 
 if __name__ == "__main__":
     ht = HashTable(2)
@@ -143,8 +158,8 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = len(ht.storage)
+    ht.resize(843)
     new_capacity = len(ht.storage)
-    ht.resize(new_capacity)
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
