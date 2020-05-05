@@ -18,6 +18,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity # This is the number of buckets in our hash table
         self.storage = [None] * capacity
+        self.head = None
 
     def fnv1(self, key):
         """
@@ -54,7 +55,18 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.storage[index] = value
+        # self.storage[index] = value
+        node = self.storage[index]
+
+        # print(f'fart', node)
+
+        # If our node exists in storage
+        if node:
+            # Replace our node with the value
+            node = value
+        # Otherwise create a new record for the list
+        else:
+            HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -86,7 +98,7 @@ class HashTable:
         else:
             return self.storage[index]
 
-    def resize(self):
+    def resize(self, new_capacity):
         """
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
