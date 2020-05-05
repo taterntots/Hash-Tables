@@ -79,12 +79,21 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # Define variables for legibility
+        current = self.head
 
-        if self.storage[index] is None:
-            print('Key not found')
-        else:
-            self.storage[index] = None
+        # While the current node exists (starting at the head)
+        while current:
+            # If the current node's key is equal to the key being passed
+            if current.key == key:
+                # Reset that node's key to None
+                current.key = None
+            
+            # Redefine current node to the next node before looping again
+            current = current.next
+
+        # Otherwise, if there are no more 'next' nodes, return None
+        return None
 
     def get(self, key):
         """
@@ -97,9 +106,9 @@ class HashTable:
         # Define variables for legibility
         current = self.head
 
-        # While the current head exists (is not None)
+        # WWhile the current node exists (starting at the head)
         while current:
-            # Starting at the head, if the current node's key is equal to the key being passed
+            # If the current node's key is equal to the key being passed
             if current.key == key:
                 # Return that node's value
                 return current.value
