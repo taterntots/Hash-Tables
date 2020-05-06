@@ -19,6 +19,7 @@ class HashTable:
         self.capacity = capacity # This is the number of buckets in our hash table
         self.storage = [None] * capacity
         self.head = None
+        self.key_count = 0
 
     def fnv1(self, key):
         """
@@ -58,6 +59,7 @@ class HashTable:
         index = self.hash_index(key)
         node = self.storage[index]
         new_node = HashTableEntry(key, value)
+        load_factor = None
 
         # If our node exists in storage
         if node:
@@ -70,6 +72,21 @@ class HashTable:
             print(new_node.key)
             # Make the head the new node
             self.head = new_node
+            # Add one to our counter for calculating load factor
+            self.key_count += 1
+            # Set our load_factor
+            load_factor = self.key_count / self.capacity
+
+            # If load factor is greater than 0.7
+            if load_factor > 0.7:
+                # Double the size of our hashtable
+                self.resize(self.capacity * 2)
+                # Set our load_factor to the new size
+                load_factor = self.key_count / self.capacity
+                
+            print(load_factor)
+            # print(self.count)
+        
 
     def delete(self, key):
         """
@@ -81,6 +98,8 @@ class HashTable:
         """
         # Define variables for legibility
         current = self.head
+        load_factor = self.key_count / self.capacity
+        print(f'count', self.key_count)
 
         # While the current node exists (starting at the head)
         while current:
@@ -88,6 +107,21 @@ class HashTable:
             if current.key == key:
                 # Reset that node's key to None
                 current.key = None
+                # Reduce the key count by one
+                self.key_count -= 1
+                print(f'count', self.key_count)
+                # Set a new load factor with the reduced key count
+                load_factor = self.key_count / self.capacity
+                print(f'lf', load_factor)
+
+                # If load factor falls below 0.2
+                if load_factor < 0.2:
+                    # Half the size of the hashtable
+                    self.resize(self.capacity // 2)
+                    # Set our load_factor to the new size
+                    load_factor = self.key_count / self.capacity
+
+                print(f'LOOK HERE', load_factor)
             
             # Redefine current node to the next node before looping again
             current = current.next
@@ -155,6 +189,8 @@ if __name__ == "__main__":
     print(ht.get("line_1"))
     print(ht.get("line_2"))
     print(ht.get("line_3"))
+
+    print(ht.delete("line_3"))
 
     # Test resizing
     old_capacity = len(ht.storage)
