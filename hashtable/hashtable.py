@@ -18,7 +18,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity # This is the number of buckets in our hash table
         self.storage = [None] * capacity
-        self.head = None
+        # self.head = None
         self.key_count = 0
 
     def fnv1(self, key):
@@ -55,38 +55,59 @@ class HashTable:
 
         Implement this.
         """
-        # Define variables for legibility
+        # # Define variables for legibility
+        # index = self.hash_index(key)
+        # node = self.storage[index]
+        # new_node = HashTableEntry(key, value)
+        # load_factor = None
+
+        # # If our node exists in storage
+        # if node:
+        #     # Replace our node with the value
+        #     node = value
+        # # Otherwise
+        # else:
+        #     # Create a new record for the list and assign to the head
+        #     new_node.next = self.head
+        #     print(new_node.key)
+        #     # Make the head the new node
+        #     self.head = new_node
+        #     # Add one to our counter for calculating load factor
+        #     self.key_count += 1
+        #     # Set our load_factor
+        #     load_factor = self.key_count / self.capacity
+
+        #     # If load factor is greater than 0.7
+        #     if load_factor > 0.7:
+        #         # Double the size of our hashtable
+        #         self.resize(self.capacity * 2)
+        #         # Set our load_factor to the new size
+        #         load_factor = self.key_count / self.capacity
+                
+        #     print(load_factor)
+        #     # print(self.count)
+
+        # -------------------------------------------------
+
         index = self.hash_index(key)
         node = self.storage[index]
-        new_node = HashTableEntry(key, value)
-        load_factor = None
 
-        # If our node exists in storage
-        if node:
-            # Replace our node with the value
-            node = value
-        # Otherwise
-        else:
-            # Create a new record for the list and assign to the head
-            new_node.next = self.head
-            print(new_node.key)
-            # Make the head the new node
-            self.head = new_node
-            # Add one to our counter for calculating load factor
-            self.key_count += 1
-            # Set our load_factor
-            load_factor = self.key_count / self.capacity
+        # if storage is empty
+        if node is None:
+            self.storage[index] = HashTableEntry(key, value)
+            return
 
-            # If load factor is greater than 0.7
-            if load_factor > 0.7:
-                # Double the size of our hashtable
-                self.resize(self.capacity * 2)
-                # Set our load_factor to the new size
-                load_factor = self.key_count / self.capacity
-                
-            print(load_factor)
-            # print(self.count)
-        
+        # insert into linked list
+        prev = node
+
+        # while storage is not empty
+        while node is not None:
+            if node.key == key:
+                node.value = value
+                return
+            prev = node
+            node = node.next
+        prev.next = HashTableEntry(key, value)    
 
     def delete(self, key):
         """
@@ -96,38 +117,76 @@ class HashTable:
 
         Implement this.
         """
-        # Define variables for legibility
-        current = self.head
-        load_factor = self.key_count / self.capacity
-        print(f'count', self.key_count)
+        # # Define variables for legibility
+        # current = self.head
+        # load_factor = self.key_count / self.capacity
+        # print(f'count', self.key_count)
 
-        # While the current node exists (starting at the head)
-        while current:
-            # If the current node's key is equal to the key being passed
-            if current.key == key:
-                # Reset that node's key to None
-                current.key = None
-                # Reduce the key count by one
-                self.key_count -= 1
-                print(f'count', self.key_count)
-                # Set a new load factor with the reduced key count
-                load_factor = self.key_count / self.capacity
-                print(f'lf', load_factor)
+        # # While the current node exists (starting at the head)
+        # while current:
+        #     # If the current node's key is equal to the key being passed
+        #     if current.key == key:
+        #         # Reset that node's key to None
+        #         current.key = None
+        #         # Reduce the key count by one
+        #         self.key_count -= 1
+        #         print(f'count', self.key_count)
+        #         # Set a new load factor with the reduced key count
+        #         load_factor = self.key_count / self.capacity
+        #         print(f'lf', load_factor)
 
-                # If load factor falls below 0.2
-                if load_factor < 0.2:
-                    # Half the size of the hashtable
-                    self.resize(self.capacity // 2)
-                    # Set our load_factor to the new size
-                    load_factor = self.key_count / self.capacity
+        #         # If load factor falls below 0.2
+        #         if load_factor < 0.2:
+        #             # Half the size of the hashtable
+        #             self.resize(self.capacity // 2)
+        #             # Set our load_factor to the new size
+        #             load_factor = self.key_count / self.capacity
 
-                print(f'LOOK HERE', load_factor)
+        #         print(f'LOOK HERE', load_factor)
             
-            # Redefine current node to the next node before looping again
-            current = current.next
+        #     # Redefine current node to the next node before looping again
+        #     current = current.next
 
-        # Otherwise, if there are no more 'next' nodes, return None
-        return None
+        # # Otherwise, if there are no more 'next' nodes, return None
+        # return None
+
+        # -------------------------------------------------
+
+        # # Define variables for legibility
+        # index = self.hash_index(key)
+        # cur = self.storage[index]
+        # prev = self.storage[index]
+
+        # if cur == None:
+        #     print("Warning: Key not found")
+        #     return
+
+        # while cur.key != key and cur.next != None:
+        #     prev = cur
+        #     cur = cur.next
+
+        # if cur.key != key:
+        #     print("Warning: Key not found")
+        #     return
+
+        # if cur == prev:
+        #     self.storage[index] = None
+        # else:
+        #     prev.next = cur.next
+
+        # -------------------------------------------------
+
+        index = self.hash_index(key)
+        node = self.storage[index]
+
+        while node is not None and node.key != key:
+            node = node.next
+
+        if node is None:
+            return None
+        else:
+            node.key = None
+            # return node.value
 
     def get(self, key):
         """
@@ -137,21 +196,34 @@ class HashTable:
 
         Implement this.
         """
-        # Define variables for legibility
-        current = self.head
+        # # Define variables for legibility
+        # current = self.head
 
-        # WWhile the current node exists (starting at the head)
-        while current:
-            # If the current node's key is equal to the key being passed
-            if current.key == key:
-                # Return that node's value
-                return current.value
+        # # While the current node exists (starting at the head)
+        # while current:
+        #     # If the current node's key is equal to the key being passed
+        #     if current.key == key:
+        #         # Return that node's value
+        #         return current.value
             
-            # Redefine current node to the next node before looping again
-            current = current.next
+        #     # Redefine current node to the next node before looping again
+        #     current = current.next
 
-        # Otherwise, if there are no more 'next' nodes, return None
-        return None
+        # # Otherwise, if there are no more 'next' nodes, return None
+        # return None
+
+        # -------------------------------------------------
+
+        index = self.hash_index(key)
+        node = self.storage[index]
+
+        while node is not None and node.key != key:
+            node = node.next
+
+        if node is None:
+            return None
+        else:
+            return node.value
 
     def resize(self, new_capacity):
         """
@@ -160,21 +232,32 @@ class HashTable:
 
         Implement this.
         """
-        # Redefine our capacity to be the passed in capacity from our argument
-        self.capacity = new_capacity
-        # Create a new storage variable for containing our updated list
-        new_storage = [None] * self.capacity
+        # # Redefine our capacity to be the passed in capacity from our argument
+        # self.capacity = new_capacity
+        # # Create a new storage variable for containing our updated list
+        # new_storage = [None] * self.capacity
         
-        # For each value in our original stored list
-        for value in self.storage:
-            # If a value exists
-            if value:
-                # Change our index and store the hashed key's value to our new storage
-                hashed_key = self.hash_index(value[0])
-                new_storage[hashed_key] = value
+        # # For each value in our original stored list
+        # for value in self.storage:
+        #     # If a value exists
+        #     if value:
+        #         # Change our index and store the hashed key's value to our new storage
+        #         hashed_key = self.hash_index(value[0])
+        #         new_storage[hashed_key] = value
         
-        # Replace the old storage with the new one
+        # # Replace the old storage with the new one
+        # self.storage = new_storage
+
+        # -------------------------------------------------
+
+        new_storage = [None] * new_capacity
+        old_storage = self.storage
         self.storage = new_storage
+
+        for node in old_storage:
+            while node is not None:
+                self.put(node.key, node.value)
+                node = node.next
 
 if __name__ == "__main__":
     ht = HashTable(2)
@@ -190,7 +273,7 @@ if __name__ == "__main__":
     print(ht.get("line_2"))
     print(ht.get("line_3"))
 
-    print(ht.delete("line_3"))
+    # print(ht.delete("line_3"))
 
     # Test resizing
     old_capacity = len(ht.storage)
