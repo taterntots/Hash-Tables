@@ -1,14 +1,35 @@
 import math
 import random
 
+cache = {}
+
 def slowfun(x, y):
     # TODO: Modify to produce the same results, but much faster
-    v = math.pow(x, y)
-    v = math.factorial(v)
-    v //= (x + y)
-    v %= 982451653
+    # We want to store the power as our key
+    # We want to store the factorial as our value (takes very long to compute)
 
-    return v
+    v = math.pow(x, y)
+
+    if v not in cache:
+        cache[v] = math.factorial(v)
+        print('GIT CACHED')
+
+        value = cache[v]
+        value //= (x + y)
+        value %= 982451653
+
+        return value
+    
+    else:
+        value = cache[v]
+        value //= (x + y)
+        value %= 982451653
+        
+        return value
+
+# slowfun(2, 3)
+# slowfun(3, 3)
+# print(cache)
 
 
 # Do not modify below this line!

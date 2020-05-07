@@ -1,6 +1,27 @@
 def word_count(s):
-    # Implement me.
 
+    word_dic = {}
+    word_list = s.lower().split()
+    word_count = []
+    new_word_list = []
+
+    for word in word_list:
+        new_word_list.append(word.replace(':','')
+        .replace(';','').replace(',','').replace('.','')
+        .replace('-','').replace('+','').replace('=','')
+        .replace('/','').replace('|','').replace('\\','')
+        .replace('[','').replace(']','').replace('{','')
+        .replace('}','').replace('(','').replace(')','')
+        .replace('*','').replace('^','').replace('&','')
+        .replace('"',''))
+
+    if new_word_list == ['']:
+        return word_dic
+
+    for w in new_word_list:
+        word_dic[w] = new_word_list.count(w)
+
+    return word_dic
 
 if __name__ == "__main__":
     print(word_count(""))
