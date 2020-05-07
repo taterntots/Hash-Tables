@@ -18,7 +18,6 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity # This is the number of buckets in our hash table
         self.storage = [None] * capacity
-        # self.head = None
         self.key_count = 0
 
     def fnv1(self, key):
@@ -89,12 +88,26 @@ class HashTable:
 
         # -------------------------------------------------
 
+        load_factor = self.key_count / self.capacity
+        print('first load:', load_factor)
+
+        # If load factor is greater than 0.7
+        if load_factor > 0.7:
+            print('resize:', load_factor)
+            # Double the size of our hashtable
+            self.resize(self.capacity * 2)
+            # self.key_count *= 0
+            # Set our load_factor to the new size
+            # load_factor = self.key_count / self.capacity
+
         index = self.hash_index(key)
         node = self.storage[index]
-
+        
         # if storage is empty
         if node is None:
             self.storage[index] = HashTableEntry(key, value)
+            # print(self.key_count)
+            self.key_count += 1
             return
 
         # insert into linked list
@@ -105,9 +118,13 @@ class HashTable:
             if node.key == key:
                 node.value = value
                 return
+
             prev = node
             node = node.next
-        prev.next = HashTableEntry(key, value)    
+
+        prev.next = HashTableEntry(key, value)
+        self.key_count += 1
+        # print('full load:', load_factor)
 
     def delete(self, key):
         """
@@ -186,7 +203,6 @@ class HashTable:
             return None
         else:
             node.key = None
-            # return node.value
 
     def get(self, key):
         """
@@ -250,9 +266,11 @@ class HashTable:
 
         # -------------------------------------------------
 
-        new_storage = [None] * new_capacity
         old_storage = self.storage
+        self.capacity = new_capacity
+        new_storage = [None] * new_capacity
         self.storage = new_storage
+        # self.key_count = 0
 
         for node in old_storage:
             while node is not None:
@@ -263,8 +281,11 @@ if __name__ == "__main__":
     ht = HashTable(2)
 
     ht.put("line_1", "Tiny hash table")
+    print("key_count:", ht.key_count)
     ht.put("line_2", "Filled beyond capacity")
+    print("key_count:", ht.key_count)
     ht.put("line_3", "Linked list saves the day!")
+    print("key_count:", ht.key_count)
 
     print("")
 
@@ -277,7 +298,7 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = len(ht.storage)
-    ht.resize(843)
+    ht.resize(ht.capacity * 2)
     new_capacity = len(ht.storage)
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
