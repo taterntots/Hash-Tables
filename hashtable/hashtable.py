@@ -88,43 +88,42 @@ class HashTable:
 
         # -------------------------------------------------
 
-        load_factor = self.key_count / self.capacity
-        print('first load:', load_factor)
-
-        # If load factor is greater than 0.7
-        if load_factor > 0.7:
-            print('resize:', load_factor)
-            # Double the size of our hashtable
-            self.resize(self.capacity * 2)
-            # self.key_count *= 0
-            # Set our load_factor to the new size
-            # load_factor = self.key_count / self.capacity
-
+        # Define some variables for legibility
         index = self.hash_index(key)
         node = self.storage[index]
-        
-        # if storage is empty
-        if node is None:
-            self.storage[index] = HashTableEntry(key, value)
-            # print(self.key_count)
-            self.key_count += 1
-            return
 
-        # insert into linked list
-        prev = node
-
-        # while storage is not empty
-        while node is not None:
-            if node.key == key:
-                node.value = value
-                return
-
+        # If storage is empty
+        if node is not None:
+            # Insert key value into the linked list
             prev = node
-            node = node.next
+            # While storage is not empty
+            while node is not None:
+                # If you find a key that matches the passed in node's key
+                if node.key == key:
+                    # Overwrite the existing value with the new value
+                    node.value = value
+                    return
+                # Change the pointers around for iteration
+                prev = node
+                node = node.next
+            #Otherwise, create a new entry in the linked list
+            prev.next = HashTableEntry(key, value)
+            # Add one to the key count
+            self.key_count += 1
+        else:
+            # Create a hashtable and store the key value pair at the head
+            self.storage[index] = HashTableEntry(key, value)
+            # Add one to the key count
+            self.key_count += 1
 
-        prev.next = HashTableEntry(key, value)
-        self.key_count += 1
-        # print('full load:', load_factor)
+        # Define some variables for legibility
+        load_factor = self.key_count / self.capacity
+        print('load:', load_factor)
+        # If load factor is greater than 0.7
+        if load_factor > 0.7:
+            # Reset the key count and double the size of our hashtable
+            self.key_count = 0
+            self.resize(self.capacity * 2)
 
     def delete(self, key):
         """
@@ -166,30 +165,6 @@ class HashTable:
 
         # # Otherwise, if there are no more 'next' nodes, return None
         # return None
-
-        # -------------------------------------------------
-
-        # # Define variables for legibility
-        # index = self.hash_index(key)
-        # cur = self.storage[index]
-        # prev = self.storage[index]
-
-        # if cur == None:
-        #     print("Warning: Key not found")
-        #     return
-
-        # while cur.key != key and cur.next != None:
-        #     prev = cur
-        #     cur = cur.next
-
-        # if cur.key != key:
-        #     print("Warning: Key not found")
-        #     return
-
-        # if cur == prev:
-        #     self.storage[index] = None
-        # else:
-        #     prev.next = cur.next
 
         # -------------------------------------------------
 
@@ -270,7 +245,6 @@ class HashTable:
         self.capacity = new_capacity
         new_storage = [None] * new_capacity
         self.storage = new_storage
-        # self.key_count = 0
 
         for node in old_storage:
             while node is not None:
